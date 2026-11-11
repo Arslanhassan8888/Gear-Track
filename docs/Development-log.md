@@ -27,3 +27,26 @@ During the initial analysis, I identified some limitations that require further 
 **Data validation**: The application does not fully handle invalid or corrupted data stored in localStorage.
 
 **Data storage**: localStorage is limited to the browser and does not provide shared access between multiple staff devices.
+
+
+## 2. Core Ticket Analysis and Development Planning
+
+Before implementing any changes, I reviewed the four mandatory Core tickets (GT-101 to GT-104) and compared their requirements, complexity and dependencies
+
+After comparing the requirements and dependencies, I decided to implement the Core tickets in the following order:
+
+**1. GT-103 — DOM-based XSS Mitigation**
+
+I chose this ticket first because the existing application contains a security issue in the way dynamic content is rendered. Addressing this problem before introducing additional features will provide a safer foundation and reduce the risk of repeating unsafe rendering practices.
+
+**2. GT-102 — Equipment Category Filtering**
+
+I selected this ticket second because it is relatively simple and mainly involves extending the equipment rendering functionality. It will allow me to apply JavaScript concepts such as arrow functions, array filtering and event handling while building on the secure rendering approach introduced in GT-103.
+
+**3. GT-101 — Checkout Form Modal**
+
+I placed this ticket third because it introduces more complex user interactions, including forms, input validation, asynchronous data operations and updating multiple sections of the interface. Completing the security improvements first will help ensure that newly entered borrower information can be displayed safely.
+
+**4. GT-104 — Return Equipment Flow**
+
+I chose this ticket last because it complements the checkout functionality. Once equipment can be checked out through the interface, I will be able to implement and test the complete loan lifecycle, including creating loans, updating equipment availability and processing returns.
