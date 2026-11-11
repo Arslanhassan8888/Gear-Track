@@ -96,29 +96,81 @@ async function renderEquipmentList() {
 }
 
 /**
- * Render the list of active loans into the page.
- * It also looks up the equipment name for each loan.
+ * Renders the loan cards using safe DOM methods.
+ *
+ * Retrieves loan and equipment records from dataService.
+ * Uses createElement() and textContent to display loan details
+ * safely, preventing XSS attacks.
+ * Displays a message when no loans are found.
+ *
+ * @returns {Promise<void>} Resolves when rendering is complete.
  */
+
 async function renderActiveLoans() {
   const container = document.getElementById("active-loans-list");
   const loans = await dataService.getLoans();
   const equipment = await dataService.getEquipment();
 
-  if (loans.length === 0) {
-    container.innerHTML = "<p>No active loans.</p>";
-    return;
-  }
+ if (loans.length === 0) {
 
-  container.innerHTML = loans
-    .map((loan) => {
-      const item = equipment.find((e) => e.id === loan.equipmentId);
-      return `
-    <div class="loan-card" data-loan-id="${loan.id}">
-        <h4>${item ? item.name : "Unknown Equipment"}</h4>
-        <p><strong>Borrower:</strong> ${loan.borrowerName} (${loan.borrowerEmail})</p>
-        <p><strong>Due Date:</strong> ${loan.dueDate}</p>
-    </div>
-    `;
-    })
-    .join("");
+    // Create a paragraph when no loans are found.
+    const message = document.createElement('p');
+
+    // Display the message as plain text.
+    message.textContent = 'No active loans.';
+
+    // Replace the previous content with the message.
+    container.replaceChildren(message);
+
+    return;
 }
+
+
+  // Create a card for each loan.
+  const cards = loans.map((loan) => {
+    // Find the equipment associated with the loan.
+    const item = equipment.find((e) => e.id === loan.equipmentId);
+
+    // Create the loan card and apply its CSS class.
+    const card = document.createElement("div");
+    card.classList.add("loan-card");
+    card.dataset.loanId = loan.id;
+
+    // Create the equipment heading and display its name safely.
+    const heading = document.createElement("h4");
+    heading.textContent = item ? item.name : "Unknown Equipment";
+
+    // Create a paragraph for the borrower details.
+    const borrower = document.createElement("p");
+
+    // Create the borrower label.
+    const borrowerLabel = document.createElement("strong");
+    borrowerLabel.textContent = "Borrower: ";
+
+    // Add the label, name and email as safe text.
+    borrower.append(
+      borrowerLabel,
+      ` ${loan.borrowerName} (${loan.borrowerEmail})`
+    );
+
+    // Create a paragraph for the due date.
+    const dueDate = document.createElement("p");
+
+    // Create the due date label.
+    const dueDateLabel = document.createElement("strong");
+    dueDateLabel.textContent = "Due Date: ";
+
+    // Add the label and date as safe text.
+    dueDate.append(dueDateLabel, ` ${loan.dueDate}`);
+
+    // Add all the elements to the loan card.
+    card.append(heading, borrower, dueDate);
+
+    // Return the completed loan card.
+    return card;
+  });
+
+  // Replace the existing loan cards with the updated cards.
+  container.replaceChildren(...cards);
+}
+
