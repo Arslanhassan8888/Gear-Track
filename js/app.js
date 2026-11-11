@@ -31,6 +31,8 @@ async function renderEquipmentList() {
         <h3>${item.name}</h3>
         <span class="badge">${item.category}</span>
         <p>Status: <strong>${item.status}</strong></p>
+        ${item.status === 'available' ? '<button class="btn">Checkout</button>' : ''}
+        
     </li>`).join('');
 }
 
