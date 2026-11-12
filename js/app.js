@@ -39,6 +39,9 @@ async function renderEquipmentList() {
   // Retrieve the equipment records from the data service.
   const items = await dataService.getEquipment();
 
+  // Extract unique categories from the equipment records.
+  const categories = [...new Set(items.map((item) => item.category))];
+
   // Create a new HTML card for each equipment record. map() is used to transform each item in the array into a new HTML element.
   const cards = items.map((item) => {
     // Create a list item to represent an individual equipment card.
