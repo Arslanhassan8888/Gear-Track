@@ -1,3 +1,4 @@
+
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -8,43 +9,35 @@ import { dataService } from "./dataService.js";
 window.addEventListener("DOMContentLoaded", start);
 
 /**
- * Render the equipment and loans.
+ * Initialises the application and displays equipment and loans.
  */
-
 function start() {
+  initialiseCategoryFilter();
   renderEquipmentList();
   renderActiveLoans();
 }
 
 /**
- * Renders the equipment list safely on the webpage.
+ * Initialises the category dropdown and its change event.
  *
- * Retrieves equipment records asynchronously through dataService.
- * Creates a list item for each equipment record using DOM methods
- * instead of inserting dynamic values directly into innerHTML.
+ * Loads the available equipment categories and adds each unique
+ * category to the dropdown.
  *
- * Uses textContent to display equipment names, categories and
- * statuses safely, preventing untrusted HTML from being interpreted.
- *
- * Displays a Checkout button only for available equipment.
- * Replaces the existing equipment cards without reloading the page.
- *
- * @returns {Promise<void>} Resolves when the equipment list has been rendered.
+ * @returns {Promise<void>} Resolves when the dropdown is ready.
  */
+async function initialiseCategoryFilter() {
+  const categoryFilter = document.getElementById("category-filter");
 
-async function renderEquipmentList() {
-  // Find the HTML element where the equipment cards will be displayed.
-  const container = document.getElementById("equipment-list");
-
-  // Retrieve the equipment records from the data service.
+  // Retrieve the equipment records.
   const items = await dataService.getEquipment();
 
   // Extract unique categories from the equipment records.
   const categories = [...new Set(items.map((item) => item.category))];
-  // Find the category dropdown.
-  const categoryFilter = document.getElementById("category-filter");
 
-  // Add an option for each equipment category.
+  // Keep the default option and remove any previous category options.
+  categoryFilter.replaceChildren(categoryFilter.options[0]);
+
+  // Create an option for each category.
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
@@ -52,69 +45,80 @@ async function renderEquipmentList() {
     categoryFilter.append(option);
   });
 
-  // Listen for changes to the selected category.
+  // Update the equipment list when the selected category changes.
   categoryFilter.addEventListener("change", () => {
-    // Get the category selected by the user.
-    const selectedCategory = categoryFilter.value;
+    renderEquipmentList(categoryFilter.value);
+  });
+}
 
-    // Filter the equipment by the selected category.
-    const filteredItems = items.filter((item) => {
-      return selectedCategory === "all" || item.category === selectedCategory;
-    });
+/**
+ * Renders the equipment list safely on the webpage.
+ *
+ * Retrieves equipment records asynchronously through dataService.
+ * Filters equipment by the selected category and creates each card
+ * using DOM methods instead of inserting dynamic HTML strings.
+ *
+ * Displays Checkout buttons only for available equipment.
+ *
+ * @param {string} selectedCategory - Category to display, or "all".
+ * @returns {Promise<void>} Resolves when the list has been rendered.
+ */
+async function renderEquipmentList(selectedCategory = "all") {
+  // Find the HTML element where the equipment cards will be displayed.
+  const container = document.getElementById("equipment-list");
+
+  // Retrieve the equipment records from the data service.
+  const items = await dataService.getEquipment();
+
+  // Filter equipment by the selected category.
+  const filteredItems = items.filter((item) => {
+    return selectedCategory === "all" || item.category === selectedCategory;
   });
 
-  // Create a new HTML card for each equipment record. map() is used to transform each item in the array into a new HTML element.
-  const cards = items.map((item) => {
-    // Create a list item to represent an individual equipment card.
+  // Create a new HTML card for each filtered equipment record.
+  const cards = filteredItems.map((item) => {
+    // Create a list item to represent an equipment card.
     const card = document.createElement("li");
 
-    // Apply the existing CSS classes for styling and availability.
+    // Apply the existing CSS classes.
     card.classList.add("equipment-card", `status-${item.status}`);
 
-    // Create a heading to display the equipment name.
+    // Create and display the equipment name safely.
     const heading = document.createElement("h3");
-
-    // Insert the name as plain text to prevent HTML injection. to avoid it will interpret any HTML tags in the name as actual HTML, which could be a security risk.
     heading.textContent = item.name;
 
-    // Create an html element (span)to display the equipment category.
+    // Create and display the equipment category.
     const badge = document.createElement("span");
-
-    // Apply the existing badge styling.
     badge.classList.add("badge");
-
-    // Display the category safely as plain text.
     badge.textContent = item.category;
 
+    // Create the status paragraph.
     const paragraph = document.createElement("p");
     paragraph.append("Status: ");
 
     const status = document.createElement("strong");
     status.textContent = item.status;
 
-    // Add the status value inside the paragraph.
+    // Add the status to the paragraph.
     paragraph.append(status);
 
-    // Add the name, category and status to the equipment card.
+    // Add the equipment details to the card.
     card.append(heading, badge, paragraph);
 
-    // Display the Checkout button only when equipment is available.
+    // Display the Checkout button only for available equipment.
     if (item.status === "available") {
       const button = document.createElement("button");
       button.classList.add("btn");
-
-      // Set the text displayed on the button.
       button.textContent = "Checkout";
 
-      // Add the button to the equipment card.
       card.append(button);
     }
 
-    // Return the completed card to the map() method.
+    // Return the completed card to map().
     return card;
   });
 
-  // Remove the previous cards and display the newly created cards.
+  // Replace the previous cards with the filtered cards.
   container.replaceChildren(...cards);
 }
 
@@ -122,28 +126,23 @@ async function renderEquipmentList() {
  * Renders the loan cards using safe DOM methods.
  *
  * Retrieves loan and equipment records from dataService.
- * Uses createElement() and textContent to display loan details
- * safely, preventing XSS attacks.
- * Displays a message when no loans are found.
+ * Displays loan information safely without interpreting dynamic
+ * values as HTML.
  *
  * @returns {Promise<void>} Resolves when rendering is complete.
  */
-
 async function renderActiveLoans() {
   const container = document.getElementById("active-loans-list");
+
   const loans = await dataService.getLoans();
   const equipment = await dataService.getEquipment();
 
+  // Display a message when no loans are found.
   if (loans.length === 0) {
-    // Create a paragraph when no loans are found.
     const message = document.createElement("p");
-
-    // Display the message as plain text.
     message.textContent = "No active loans.";
 
-    // Replace the previous content with the message.
     container.replaceChildren(message);
-
     return;
   }
 
@@ -157,40 +156,35 @@ async function renderActiveLoans() {
     card.classList.add("loan-card");
     card.dataset.loanId = loan.id;
 
-    // Create the equipment heading and display its name safely.
+    // Create the equipment heading.
     const heading = document.createElement("h4");
     heading.textContent = item ? item.name : "Unknown Equipment";
 
-    // Create a paragraph for the borrower details.
+    // Create the borrower details.
     const borrower = document.createElement("p");
 
-    // Create the borrower label.
     const borrowerLabel = document.createElement("strong");
     borrowerLabel.textContent = "Borrower: ";
 
-    // Add the label, name and email as safe text.
     borrower.append(
       borrowerLabel,
-      ` ${loan.borrowerName} (${loan.borrowerEmail})`,
+      ` ${loan.borrowerName} (${loan.borrowerEmail})`
     );
 
-    // Create a paragraph for the due date.
+    // Create the due date details.
     const dueDate = document.createElement("p");
 
-    // Create the due date label.
     const dueDateLabel = document.createElement("strong");
     dueDateLabel.textContent = "Due Date: ";
 
-    // Add the label and date as safe text.
     dueDate.append(dueDateLabel, ` ${loan.dueDate}`);
 
-    // Add all the elements to the loan card.
+    // Add the details to the loan card.
     card.append(heading, borrower, dueDate);
 
-    // Return the completed loan card.
     return card;
   });
 
-  // Replace the existing loan cards with the updated cards.
+  // Replace the previous loan cards.
   container.replaceChildren(...cards);
 }
