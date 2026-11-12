@@ -52,6 +52,17 @@ async function renderEquipmentList() {
     categoryFilter.append(option);
   });
 
+  // Listen for changes to the selected category.
+  categoryFilter.addEventListener("change", () => {
+    // Get the category selected by the user.
+    const selectedCategory = categoryFilter.value;
+
+    // Filter the equipment by the selected category.
+    const filteredItems = items.filter((item) => {
+      return selectedCategory === "all" || item.category === selectedCategory;
+    });
+  });
+
   // Create a new HTML card for each equipment record. map() is used to transform each item in the array into a new HTML element.
   const cards = items.map((item) => {
     // Create a list item to represent an individual equipment card.
