@@ -16,7 +16,6 @@ function start() {
   renderActiveLoans();
 }
 
-
 /**
  * Renders the equipment list safely on the webpage.
  *
@@ -111,20 +110,18 @@ async function renderActiveLoans() {
   const loans = await dataService.getLoans();
   const equipment = await dataService.getEquipment();
 
- if (loans.length === 0) {
-
+  if (loans.length === 0) {
     // Create a paragraph when no loans are found.
-    const message = document.createElement('p');
+    const message = document.createElement("p");
 
     // Display the message as plain text.
-    message.textContent = 'No active loans.';
+    message.textContent = "No active loans.";
 
     // Replace the previous content with the message.
     container.replaceChildren(message);
 
     return;
-}
-
+  }
 
   // Create a card for each loan.
   const cards = loans.map((loan) => {
@@ -150,7 +147,7 @@ async function renderActiveLoans() {
     // Add the label, name and email as safe text.
     borrower.append(
       borrowerLabel,
-      ` ${loan.borrowerName} (${loan.borrowerEmail})`
+      ` ${loan.borrowerName} (${loan.borrowerEmail})`,
     );
 
     // Create a paragraph for the due date.
@@ -173,4 +170,3 @@ async function renderActiveLoans() {
   // Replace the existing loan cards with the updated cards.
   container.replaceChildren(...cards);
 }
-
