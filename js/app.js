@@ -41,6 +41,16 @@ async function renderEquipmentList() {
 
   // Extract unique categories from the equipment records.
   const categories = [...new Set(items.map((item) => item.category))];
+  // Find the category dropdown.
+  const categoryFilter = document.getElementById("category-filter");
+
+  // Add an option for each equipment category.
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.append(option);
+  });
 
   // Create a new HTML card for each equipment record. map() is used to transform each item in the array into a new HTML element.
   const cards = items.map((item) => {
