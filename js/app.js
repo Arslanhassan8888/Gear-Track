@@ -1,4 +1,3 @@
-
 /**
  * Application entry point for rendering equipment and loan data.
  * @module app
@@ -168,7 +167,7 @@ async function renderActiveLoans() {
 
     borrower.append(
       borrowerLabel,
-      ` ${loan.borrowerName} (${loan.borrowerEmail})`
+      ` ${loan.borrowerName} (${loan.borrowerEmail})`,
     );
 
     // Create the due date details.

@@ -1,0 +1,9 @@
+# Ignore installed npm packages
+node_modules/
+
+# Ignore generated Cypress files
+cypress/videos/
+cypress/screenshots/
+
+# Ignore test coverage reports
+coverage/

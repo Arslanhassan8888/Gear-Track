@@ -1,0 +1,28 @@
+{
+  "name": "gear-track",
+  "version": "1.0.0",
+  "description": "GearTrack is an internal web application used by college department staff to manage the loaning of shared equipment (cameras, laptops, tripods, and tools) to students and faculty.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arslanhassan8888/Gear-Track.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Arslanhassan8888/Gear-Track/issues"
+  },
+  "homepage": "https://github.com/Arslanhassan8888/Gear-Track#readme",
+  "devDependencies": {
+    "cypress": "^16.3.0",
+    "jest": "^30.5.2"
+  }
+}
