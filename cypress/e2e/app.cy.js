@@ -44,20 +44,34 @@
 
 
 
+
 describe("GT-102: Category Filtering", () => {
     it("displays the category dropdown", () => {
         cy.visit("http://127.0.0.1:5500");
 
         cy.get("#category-filter").should("be.visible");
     });
-});
 
-it("displays only cameras when Cameras is selected", () => {
-    cy.visit("http://127.0.0.1:5500");
+    it("displays only cameras when Cameras is selected", () => {
+        cy.visit("http://127.0.0.1:5500");
 
-    cy.get("#category-filter").select("Cameras");
+        cy.get("#category-filter").select("Cameras");
 
-    cy.get("#equipment-list .equipment-card").each((card) => {
-        cy.wrap(card).find(".badge").should("have.text", "Cameras");
+        cy.get("#equipment-list .equipment-card")
+            .should("have.length", 2);
+
+        cy.get("#equipment-list .equipment-card").each((card) => {
+            cy.wrap(card).find(".badge").should("have.text", "Cameras");
+        });
+    });
+
+    it("displays all equipment when All categories is selected", () => {
+        cy.visit("http://127.0.0.1:5500");
+
+        cy.get("#category-filter").select("Cameras");
+        cy.get("#category-filter").select("all");
+
+        cy.get("#equipment-list .equipment-card")
+            .should("have.length", 4);
     });
 });
