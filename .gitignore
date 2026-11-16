@@ -7,3 +7,5 @@ cypress/screenshots/
 
 # Ignore test coverage reports
 coverage/
+
+cypress/downloads/
