@@ -45,13 +45,22 @@
 
 
 
+
+/*
+ * GT-102 - CATEGORY FILTERING TESTS
+ * Tests the category dropdown and equipment filtering.
+ */
+
 describe("GT-102: Category Filtering", () => {
+
+    // Test 1: Check that the category dropdown is visible.
     it("displays the category dropdown", () => {
         cy.visit("http://127.0.0.1:5500");
 
         cy.get("#category-filter").should("be.visible");
     });
 
+    // Test 2: Check that selecting Cameras displays two camera cards.
     it("displays only cameras when Cameras is selected", () => {
         cy.visit("http://127.0.0.1:5500");
 
@@ -65,6 +74,7 @@ describe("GT-102: Category Filtering", () => {
         });
     });
 
+    // Test 3: Check that All categories restores all four cards.
     it("displays all equipment when All categories is selected", () => {
         cy.visit("http://127.0.0.1:5500");
 
@@ -75,3 +85,4 @@ describe("GT-102: Category Filtering", () => {
             .should("have.length", 4);
     });
 });
+

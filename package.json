@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/Arslanhassan8888/Gear-Track#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.29.14",
     "cypress": "^16.3.0",
-    "jest": "^30.5.2"
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2"
   }
 }
