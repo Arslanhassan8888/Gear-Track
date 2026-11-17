@@ -289,3 +289,133 @@ I used ChatGPT as a learning and development support tool for:
 - Debugging: Investigating `ReferenceError` messages, disappearing cards and duplicated category options.
 - Automated testing: Learning about Jest and Cypress, understanding testing commands and investigating configuration problems.
 
+
+## 5. GT-101 — Checkout Form Modal
+
+### 5.1 Problem Analysis
+
+The GT-101 ticket required the implementation of a checkout form modal to allow department staff to borrow available equipment. The application already displayed Checkout buttons for equipment marked as `available`, but these buttons did not have any functionality. This part has been implemented at begining of the prohject when i did't consider the fact of processing ticket number as first.
+
+The main requirements were to open a modal containing Borrower Name, Borrower Email and Return Date fields, save the loan using `dataService.saveLoan()`, and automatically update the Equipment List and Active Loans sections without reloading the page.
+
+### 5.2 Alternative Solutions
+
+I considered three approaches for implementing the checkout interface.
+
+**Alternative 1 — JavaScript prompt()**
+
+Using `prompt()` would require very little code. However, it would not provide a suitable form containing multiple fields and would offer limited control over validation and presentation.
+
+**Alternative 2 — Custom HTML modal**
+
+A custom modal could be developed using HTML, CSS and JavaScript. This would provide greater flexibility, but additional code would be needed to manage keyboard interactions, focus and modal behaviour.
+
+**Alternative 3 — Native HTML dialog**
+
+The HTML `<dialog>` element provides built-in modal functionality through `showModal()` and `close()`. It supports keyboard interaction, including closing the modal with Escape, and reduces the need for additional JavaScript.
+
+### 5.3 Research and Learning
+
+I explored the HTML `<dialog>` element, JavaScript event listeners, form submission and asynchronous functions.
+
+I developed my understanding of `async/await`, `try...catch`, `dataset`, `form.reset()` and the difference between HTML validation and JavaScript validation.
+
+I also reviewed CSS Grid and Flexbox. Grid was suitable for arranging the form fields vertically, while Flexbox provided a simple solution for aligning the action buttons.
+
+For testing, I explored how Cypress could simulate user interactions and how `localStorage` could be initialised with predictable test data.
+
+### 5.4 Selected Solution and Justification
+
+I selected the native HTML `<dialog>` element because it provided the required functionality with relatively little code and offered built-in accessibility features.
+
+I decided to use one reusable modal for all available equipment. When a Checkout button is clicked, the selected equipment ID is stored using `dialog.dataset.equipmentId`.
+
+The form uses native HTML validation for required fields and email format, alongside JavaScript checks for empty borrower names, equipment selection and future return dates.
+
+I retained the existing separation between `app.js`, which manages the interface, and `dataService.js`, which manages loan data.
+
+### 5.5 Implementation
+
+I first added the checkout modal to `index.html`, containing the three required fields and Cancel and Confirm Checkout buttons.
+
+In `app.js`, I connected each available equipment's Checkout button to the modal using an event listener. The selected equipment ID was stored in the dialog's dataset, allowing the same form to work with different equipment records.
+
+I created `initialiseCheckoutModal()` to manage cancellation, form submission and validation. The submit handler collects the form values, constructs a `loanData` object and calls `dataService.saveLoan()` using `async/await`.
+
+I also improved `saveLoan()` by checking that the selected equipment exists and is available before creating the loan. An error is raised if the equipment cannot be borrowed.
+
+After a successful submission, the modal closes and the existing `renderEquipmentList()` and `renderActiveLoans()` functions are called to refresh both sections without reloading the page. The currently selected category is preserved.
+
+I added a `close` event listener to reset the form when the modal closes through Cancel, Escape or successful submission.
+
+Finally, I styled the modal in `components.css` using CSS Grid for the fields and Flexbox for the action buttons. I reused the existing CSS variables and button classes to maintain visual consistency.
+
+### 5.6 Testing and Error Simulation
+
+I carried out manual testing using Chrome DevTools and automated testing using Cypress.
+
+During manual testing, I checked that the modal opened for the correct equipment, required fields were validated, invalid return dates were rejected and successful submissions created new loan records.
+
+I also verified that unavailable equipment could not be borrowed again, that Cancel and Escape cleared the form, and that both lists updated automatically without refreshing the page.
+
+For automated testing, I created four Cypress tests covering:
+
+- Displaying Checkout buttons only for available equipment.
+- Opening the modal and displaying the required fields.
+- Closing the modal using Cancel without saving a loan.
+- Saving a loan and updating both lists without reloading.
+
+All four GT-101 Cypress tests passed, alongside the three existing GT-102 tests.
+
+**Test isolation:** I used `http://127.0.0.1:5501` for Cypress and kept normal development on port `5500`. This separated their `localStorage` data. Cypress used `beforeEach()` and `onBeforeLoad()` to restore known sample equipment and loan records before each test, making the tests repeatable.
+
+The successful checkout test used the fixed return date `2036-12-20` to satisfy future-date validation. This date will require updating from 20 December 2036 onwards.
+
+### 5.7 Problems Encountered and Fixes
+
+**Problem 1 — Using await without async**
+
+When implementing the form submission, I initially used `await dataService.saveLoan()` inside an event handler that was not declared `async`.
+
+I investigated the problem and corrected the event listener by adding `async` to its callback.
+
+**Problem 2 — Equipment cards did not update automatically**
+
+The loan was successfully saved in `localStorage`, but the equipment and loan cards did not change until the browser was refreshed.
+
+I resolved this by calling the existing rendering functions after a successful save. This allowed the interface to update without reloading and preserved the selected category filter.
+
+**Problem 3 — Cypress tests modified stored data**
+
+The checkout test created real loan records in the browser's `localStorage`. Repeated test execution could therefore affect later tests.
+
+I addressed this by using a separate local port for Cypress and preparing fresh sample data before each test. This prevented the test data from affecting my normal development environment and improved repeatability.
+
+### 5.8 Critical Reflection and Learning Outcomes
+
+GT-101 helped me understand how to connect HTML forms, JavaScript event handling and a data service to create a complete interactive feature.
+
+One important lesson was the difference between successfully saving data and updating the user interface. Although `saveLoan()` worked correctly, the application still needed to call its rendering functions to display the new information immediately.
+
+I also learned why validation should be applied at appropriate points. HTML provides useful built-in checks, while JavaScript can enforce additional rules. Checking equipment availability inside `dataService.js` also protects the saving operation independently of the interface.
+
+Cypress helped me understand the importance of test isolation and predictable data. Preparing fresh test records allowed the tests to be repeated without affecting normal application data.
+
+A remaining limitation is that GearTrack uses browser `localStorage` rather than a central database, so it is not designed for reliable multi-user access. However, this is appropriate for the scope of the coursework.
+
+Overall, I met the GT-101 acceptance criteria while improving my understanding of asynchronous JavaScript, defensive programming, responsive design, accessibility and automated testing.
+
+### 5.9 References
+
+- https://web.dev/learn/html/dialog/
+- https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+- https://www.joshwcomeau.com/css/interactive-guide-to-grid/
+- https://design.dev/guides/flexbox/
+- https://docs.cypress.io/app/core-concepts/test-isolation?
+
+### 5.10 AI Use
+
+I used ChatGPT to support my understanding of HTML dialog elements, JavaScript event handling, asynchronous operations, validation, error handling and CSS layout techniques and Cypress isolation test using a different port.
+
+AI also supported the exploration of alternative implementations, suggested code examples and assisted with debugging and test planning. I reviewed the suggestions, adapted them to the existing GearTrack structure and verified the functionality through manual and automated testing.

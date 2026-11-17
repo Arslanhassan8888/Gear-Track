@@ -25,6 +25,7 @@ function start() {
  *
  * @returns {void}
  */
+
 function initialiseCheckoutModal() {
   const dialog = document.getElementById("checkout-dialog");
   const cancelButton = document.getElementById("cancel-checkout");
