@@ -36,8 +36,38 @@ function initialiseCheckoutModal() {
 
     const equipmentId = dialog.dataset.equipmentId;
     const borrowerName = document.getElementById("borrower-name").value.trim();
-    const borrowerEmail = document.getElementById("borrower-email").value.trim();
+    const borrowerEmail = document
+      .getElementById("borrower-email")
+      .value.trim();
     const dueDate = document.getElementById("return-date").value;
+
+    // Check that an equipment item has been selected.
+    if (!equipmentId) {
+      alert("No equipment selected.");
+      return;
+    }
+
+    // Check that the borrower name is not empty.
+    if (!borrowerName) {
+      alert("Please enter a borrower name.");
+      return;
+    }
+
+    // Get today's date in local time.
+    const today = new Date();
+    const localToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+
+    // Check that the return date is in the future.
+    const selectedDate = new Date(`${dueDate}T00:00:00`);
+
+    if (!dueDate || selectedDate <= localToday) {
+      alert("Please select a future return date.");
+      return;
+    }
 
     // Temporary debugging: check the submitted values.
     console.log({
