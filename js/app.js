@@ -126,6 +126,8 @@ async function renderEquipmentList(selectedCategory = "all") {
       // Open the checkout modal for the selected equipment.
       button.addEventListener("click", () => {
         const dialog = document.getElementById("checkout-dialog");
+
+        dialog.dataset.equipmentId = item.id;
         dialog.showModal();
       });
 
