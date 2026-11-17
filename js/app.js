@@ -77,10 +77,20 @@ function initialiseCheckoutModal() {
       dueDate,
     };
 
-    // Save the loan and handle any errors.
+    // Save the loan and update the interface.
     try {
       await dataService.saveLoan(loanData);
-      console.log("Loan saved successfully.");
+
+      // Close and clear the checkout form.
+      dialog.close();
+      form.reset();
+
+      // Keep the currently selected equipment category.
+      const categoryFilter = document.getElementById("category-filter");
+
+      // Refresh both lists without reloading the page.
+      await renderEquipmentList(categoryFilter.value);
+      await renderActiveLoans();
     } catch (error) {
       alert(error.message);
     }
