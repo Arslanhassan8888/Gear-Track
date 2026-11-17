@@ -69,8 +69,13 @@ function initialiseCheckoutModal() {
     // Check that the return date is in the future.
     const selectedDate = new Date(`${dueDate}T00:00:00`);
 
-    if (!dueDate || selectedDate <= localToday) {
-      alert("Please select a future return date.");
+    // Check that the return date is valid and in the future.
+    if (
+      !dueDate ||
+      Number.isNaN(selectedDate.getTime()) ||
+      selectedDate <= localToday
+    ) {
+      alert("Please select a valid future return date.");
       return;
     }
 
@@ -82,22 +87,23 @@ function initialiseCheckoutModal() {
       dueDate,
     };
 
-    // Save the loan and update the interface.
+    // Save the loan and handle saving errors.
     try {
       await dataService.saveLoan(loanData);
-
-      // Close the modal after saving the loan.
-      dialog.close();
-
-      // Keep the currently selected equipment category.
-      const categoryFilter = document.getElementById("category-filter");
-
-      // Refresh both lists without reloading the page.
-      await renderEquipmentList(categoryFilter.value);
-      await renderActiveLoans();
     } catch (error) {
       alert(error.message);
+      return;
     }
+
+    // Close the modal after a successful save.
+    dialog.close();
+
+    // Keep the selected category.
+    const categoryFilter = document.getElementById("category-filter");
+
+    // Refresh both lists without reloading.
+    await renderEquipmentList(categoryFilter.value);
+    await renderActiveLoans();
   });
 }
 /**
