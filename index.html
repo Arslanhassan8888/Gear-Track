@@ -33,15 +33,19 @@
                 <form id="checkout-form">
                     <label for="borrower-name">Borrower Name</label>
                     <input type="text" id="borrower-name" required>
-
                     <label for="borrower-email">Borrower Email</label>
                     <input type="email" id="borrower-email" required>
-
                     <label for="return-date">Return Date</label>
                     <input type="date" id="return-date" required>
-                    
-                    <button type="button" id="cancel-checkout">Cancel</button>
-                    <button type="submit">Confirm Checkout</button>
+                    <!-- Checkout form actions. -->
+                    <footer class="checkout-actions">
+                        <button type="button" id="cancel-checkout" class="btn btn-secondary">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn">
+                            Confirm Checkout
+                        </button>
+                    </footer>
                 </form>
             </dialog>
         </main>
