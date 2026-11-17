@@ -30,6 +30,11 @@ function initialiseCheckoutModal() {
     dialog.close();
   });
 
+  // Clear the form whenever the modal closes.
+  dialog.addEventListener("close", () => {
+    form.reset();
+  });
+
   // Read the form values when the user submits it.
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -81,9 +86,8 @@ function initialiseCheckoutModal() {
     try {
       await dataService.saveLoan(loanData);
 
-      // Close and clear the checkout form.
+      // Close the modal after saving the loan.
       dialog.close();
-      form.reset();
 
       // Keep the currently selected equipment category.
       const categoryFilter = document.getElementById("category-filter");
