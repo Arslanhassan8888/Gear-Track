@@ -63,6 +63,19 @@ I identified a potential cross-site scripting (XSS) vulnerability because dynami
 
 I identified two functions that needed modification: `renderEquipmentList()` and `renderActiveLoans()` in `js/app.js`.
 
+
+### 3.2 Alternative Solutions Considered
+
+I considered three possible solutions:
+
+- **HTML escaping:** HTML escaping converts special characters, such as < and >, into HTML entities to prevent them from being interpreted as HTML. I could implement this by creating a function to escape dynamic values before inserting them into innerHTML. This would require fewer changes to the existing code. However, every dynamic value would need to be escaped correctly, and missing one could introduce a security risk.
+- **Native DOM methods:** This approach uses createElement() to create HTML elements and textContent to display dynamic values as plain text.
+
+I could replace the existing innerHTML templates with DOM methods such as createElement(), textContent() and append(). This would reduce the risk of XSS without additional libraries. However, it would require more code and make the rendering functions longer.
+- **Sanitisation library:** HTML sanitisation removes potentially dangerous content from HTML while allowing safe formatting.
+
+I could use a library such as DOMPurify to clean dynamic HTML before displaying it. This would be useful if GearTrack needed to support formatted HTML. However, it would introduce an external dependency and additional maintenance.
+
 ### 3.2 Research and Learning
 
 I explored how `innerHTML` works and how DOM methods can prevent HTML injection.
@@ -82,18 +95,6 @@ I also used AI explanations to improve my understanding of arrow functions, para
 -https://jcarpizo.github.io/owasp-info/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html
 -https://escapehtml.com/how-to-escape-html-strings-to-prevent-xss-attacks-in-frontend-development
 -https://github.com/mganss/HtmlSanitizer
-
-### 3.3 Alternative Solutions Considered
-
-I considered three possible solutions:
-
-- **HTML escaping:** HTML escaping converts special characters, such as < and >, into HTML entities to prevent them from being interpreted as HTML. I could implement this by creating a function to escape dynamic values before inserting them into innerHTML. This would require fewer changes to the existing code. However, every dynamic value would need to be escaped correctly, and missing one could introduce a security risk.
-- **Native DOM methods:** This approach uses createElement() to create HTML elements and textContent to display dynamic values as plain text.
-
-I could replace the existing innerHTML templates with DOM methods such as createElement(), textContent() and append(). This would reduce the risk of XSS without additional libraries. However, it would require more code and make the rendering functions longer.
-- **Sanitisation library:** HTML sanitisation removes potentially dangerous content from HTML while allowing safe formatting.
-
-I could use a library such as DOMPurify to clean dynamic HTML before displaying it. This would be useful if GearTrack needed to support formatted HTML. However, it would introduce an external dependency and additional maintenance.
 
 ### 3.4 Selected Solution and Justification
 
@@ -167,7 +168,18 @@ I identified the main tasks: adding an accessible dropdown to `index.html`, retr
 
 I also needed to preserve the secure rendering developed in GT-103 and avoid unnecessary changes to `dataService.js`.
 
-### 4.2 Research and Learning
+
+### 4.2 Alternative Solutions Considered
+
+I considered three possible solutions:
+
+- **JavaScript array filtering:** This approach uses `filter()` to create a new array containing equipment matching the selected category. The existing rendering function could then display the results. It is simple, readable and requires minimal changes. However, the cards need to be recreated when the category changes.
+
+- **Show and hide existing cards:** I could use JavaScript and CSS to control the visibility of existing equipment cards. This would avoid recreating the elements, but it would require additional DOM management and could become harder to maintain when equipment data changes.
+
+- **Filtering through dataService:** I could modify `dataService.js` to retrieve equipment based on the selected category. This could be useful in a larger application, but it would introduce unnecessary complexity for GearTrack, where the equipment records are already available.
+
+### 4.3 Research and Learning
 
 I explored JavaScript array methods, particularly `map()`, `filter()` and `forEach()`, to understand how to extract categories, filter equipment records and generate dropdown options.
 
@@ -194,15 +206,6 @@ I also explored Jest and Cypress for automated testing. I investigated their pur
 - https://docs.cypress.io/app/end-to-end-testing/writing-your-first-end-to-end-test
 - https://docs.cypress.io/app/core-concepts/best-practices
 
-### 4.3 Alternative Solutions Considered
-
-I considered three possible solutions:
-
-- **JavaScript array filtering:** This approach uses `filter()` to create a new array containing equipment matching the selected category. The existing rendering function could then display the results. It is simple, readable and requires minimal changes. However, the cards need to be recreated when the category changes.
-
-- **Show and hide existing cards:** I could use JavaScript and CSS to control the visibility of existing equipment cards. This would avoid recreating the elements, but it would require additional DOM management and could become harder to maintain when equipment data changes.
-
-- **Filtering through dataService:** I could modify `dataService.js` to retrieve equipment based on the selected category. This could be useful in a larger application, but it would introduce unnecessary complexity for GearTrack, where the equipment records are already available.
 
 ### 4.4 Selected Solution and Justification
 
@@ -285,4 +288,4 @@ I used ChatGPT as a learning and development support tool for:
 - Implementation support: Reviewing suggested code, understanding its logic and integrating changes into the existing application.
 - Debugging: Investigating `ReferenceError` messages, disappearing cards and duplicated category options.
 - Automated testing: Learning about Jest and Cypress, understanding testing commands and investigating configuration problems.
-- Documentation: Receiving feedback on the organisation and clarity of my Development Log.
+

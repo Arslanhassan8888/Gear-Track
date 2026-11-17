@@ -27,6 +27,23 @@
                 <h2>Active Loans</h2>
                 <div id="active-loans-list" class="item-list"></div>
             </section>
+            <!-- Checkout form modal -->
+            <dialog id="checkout-dialog">
+                <h2>Checkout Equipment</h2>
+                <form id="checkout-form">
+                    <label for="borrower-name">Borrower Name</label>
+                    <input type="text" id="borrower-name" required>
+
+                    <label for="borrower-email">Borrower Email</label>
+                    <input type="email" id="borrower-email" required>
+
+                    <label for="return-date">Return Date</label>
+                    <input type="date" id="return-date" required>
+                    
+                    <button type="button" id="cancel-checkout">Cancel</button>
+                    <button type="submit">Confirm Checkout</button>
+                </form>
+            </dialog>
         </main>
         <script type="module" src="js/app.js"></script>
     </body>

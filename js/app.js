@@ -110,6 +110,12 @@ async function renderEquipmentList(selectedCategory = "all") {
       button.classList.add("btn");
       button.textContent = "Checkout";
 
+      // Open the checkout modal for the selected equipment.
+      button.addEventListener("click", () => {
+        const dialog = document.getElementById("checkout-dialog");
+        dialog.showModal();
+      });
+
       card.append(button);
     }
 
