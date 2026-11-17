@@ -31,7 +31,7 @@ function initialiseCheckoutModal() {
   });
 
   // Read the form values when the user submits it.
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const equipmentId = dialog.dataset.equipmentId;
@@ -69,13 +69,21 @@ function initialiseCheckoutModal() {
       return;
     }
 
-    // Temporary debugging: check the submitted values.
-    console.log({
+    // Create the loan data from the form values.
+    const loanData = {
       equipmentId,
       borrowerName,
       borrowerEmail,
       dueDate,
-    });
+    };
+
+    // Save the loan and handle any errors.
+    try {
+      await dataService.saveLoan(loanData);
+      console.log("Loan saved successfully.");
+    } catch (error) {
+      alert(error.message);
+    }
   });
 }
 /**
