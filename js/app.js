@@ -14,8 +14,21 @@ function start() {
   initialiseCategoryFilter();
   renderEquipmentList();
   renderActiveLoans();
+  initialiseCheckoutModal();
 }
 
+/**
+ * Initialises the checkout modal controls.
+ */
+function initialiseCheckoutModal() {
+  const dialog = document.getElementById("checkout-dialog");
+  const cancelButton = document.getElementById("cancel-checkout");
+
+  // Close the modal without submitting the form.
+  cancelButton.addEventListener("click", () => {
+    dialog.close();
+  });
+}
 /**
  * Initialises the category dropdown and its change event.
  *
