@@ -18,7 +18,12 @@ function start() {
 }
 
 /**
- * Initialises the checkout modal controls.
+ * Initialises the checkout modal and its event handlers.
+ *
+ * Handles form cancellation, validation and loan submission.
+ * Refreshes the equipment and loan lists after a successful checkout.
+ *
+ * @returns {void}
  */
 function initialiseCheckoutModal() {
   const dialog = document.getElementById("checkout-dialog");

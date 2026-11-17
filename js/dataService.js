@@ -117,11 +117,16 @@ export const dataService = {
     return JSON.parse(data) || [];
   },
 
-  /**
-   * Save a new loan record and update the equipment status.
-   * @param {NewLoanData} loanData - Information about the new loan.
-   * @returns {Promise<Loan>} The newly created loan record.
-   */
+ /**
+ * Saves a new loan and updates the equipment status.
+ *
+ * Checks that the selected equipment exists and is available
+ * before creating a new loan record.
+ *
+ * @param {NewLoanData} loanData - Details of the new loan.
+ * @returns {Promise<Loan>} The newly created loan.
+ * @throws {Error} If the equipment is not available.
+ */
   async saveLoan(loanData) {
     const loans = await this.getLoans();
     // Check that the equipment exists and is available.
