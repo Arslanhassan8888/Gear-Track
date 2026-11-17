@@ -23,10 +23,29 @@ function start() {
 function initialiseCheckoutModal() {
   const dialog = document.getElementById("checkout-dialog");
   const cancelButton = document.getElementById("cancel-checkout");
+  const form = document.getElementById("checkout-form");
 
   // Close the modal without submitting the form.
   cancelButton.addEventListener("click", () => {
     dialog.close();
+  });
+
+  // Read the form values when the user submits it.
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const equipmentId = dialog.dataset.equipmentId;
+    const borrowerName = document.getElementById("borrower-name").value.trim();
+    const borrowerEmail = document.getElementById("borrower-email").value.trim();
+    const dueDate = document.getElementById("return-date").value;
+
+    // Temporary debugging: check the submitted values.
+    console.log({
+      equipmentId,
+      borrowerName,
+      borrowerEmail,
+      dueDate,
+    });
   });
 }
 /**
@@ -126,7 +145,7 @@ async function renderEquipmentList(selectedCategory = "all") {
       // Open the checkout modal for the selected equipment.
       button.addEventListener("click", () => {
         const dialog = document.getElementById("checkout-dialog");
-
+        // Store the equipment ID in the dialog's dataset for later use.
         dialog.dataset.equipmentId = item.id;
         dialog.showModal();
       });
